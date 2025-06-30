@@ -1,0 +1,45 @@
+programa ::= instruccion* EOF
+
+instruccion ::= declaracion
+             | impresion
+             | condicional
+             | bucle_mientras
+             | bucle_para
+             | funcion_llamada ";"
+             | retorno
+             | ";"
+
+declaracion ::= tipo_dato IDENTIFICADOR ("=" expr)? ";"
+
+impresion ::= "imprimir" "(" (expr | CADENA) ")" ";"
+
+condicional ::= "si" "(" expr ")" bloque ("sino" bloque)?
+
+bucle_mientras ::= "mientras" "(" expr ")" bloque
+
+bucle_para ::= "para" "(" declaracion expr ";" actualizacion ")" bloque
+
+actualizacion ::= IDENTIFICADOR "=" expr
+
+bloque ::= "{" instruccion* "}"
+
+expr ::= expr ("+" | "-" | "*" | "/") expr
+       | expr ("&&" | "||") expr
+       | expr ("<" | ">" | "==" | "!=" | "<=" | ">=") expr
+       | "(" expr ")"
+       | funcion_llamada
+       | IDENTIFICADOR
+       | NUMERO
+       | CADENA
+
+funcion_llamada ::= ("raiz" | "sin" | "cos" | "potencia") "(" expr ("," expr)? ")"
+
+retorno ::= "retornar" expr ";"
+
+tipo_dato ::= "entero" | "decimal" | "texto"
+
+IDENTIFICADOR ::= [a-zA-Z_][a-zA-Z0-9_]*
+NUMERO ::= [0-9]+("."[0-9]+)?
+CADENA ::= "\"" ~["\r\n]* "\""
+ESPACIOS ::= [ \t\r\n]+ -> skip
+COMENTARIO ::= "//" ~[\r\n]* -> skip
