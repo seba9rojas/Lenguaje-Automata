@@ -1,0 +1,121 @@
+grammar LenguajeEdu;
+
+// ======== Parser ========
+
+programa: instruccion* EOF ;
+
+instruccion
+    : declaracion
+    | impresion
+    | condicional
+    | bucle_mientras
+    | bucle_para
+    | funcion_llamada PUNTOYCOMA
+    | retorno
+    | asignacion
+    | PUNTOYCOMA
+    ;
+
+declaracion
+    : tipo_dato IDENTIFICADOR (ASIGNACION expr)? PUNTOYCOMA
+    ;
+
+asignacion
+    : IDENTIFICADOR ASIGNACION expr PUNTOYCOMA
+    ;
+
+impresion
+    : IMPRIMIR PAR_IZQ (expr | CADENA) PAR_DER PUNTOYCOMA
+    ;
+
+condicional
+    : SI PAR_IZQ expr PAR_DER bloque (SINO bloque)?
+    ;
+
+bucle_mientras
+    : MIENTRAS PAR_IZQ expr PAR_DER bloque
+    ;
+
+bucle_para
+    : PARA PAR_IZQ declaracion expr PUNTOYCOMA actualizacion PAR_DER bloque
+    ;
+
+actualizacion
+    : IDENTIFICADOR ASIGNACION expr
+    ;
+
+bloque
+    : LLAVE_IZQ instruccion* LLAVE_DER
+    ;
+
+expr
+    : expr op=('+'|'-'|'*'|'/') expr
+    | expr op=('&&'|'||') expr
+    | expr op=(MENOR|MAYOR|IGUAL|DISTINTO|MENOR_IGUAL|MAYOR_IGUAL) expr
+    | PAR_IZQ expr PAR_DER
+    | funcion_llamada
+    | IDENTIFICADOR
+    | NUMERO
+    | CADENA
+    ;
+
+funcion_llamada
+    : (RAIZ | SIN | COS | POTENCIA) PAR_IZQ expr (',' expr)? PAR_DER
+    ;
+
+retorno
+    : RETORNAR expr PUNTOYCOMA
+    ;
+
+tipo_dato
+    : ENTERO
+    | DECIMAL
+    | TEXTO
+    ;
+
+// ======== Lexer ========
+
+// Palabras clave
+IMPRIMIR: 'imprimir' ;
+SI: 'si' ;
+SINO: 'sino' ;
+MIENTRAS: 'mientras' ;
+PARA: 'para' ;
+RETORNAR: 'retornar' ;
+
+RAIZ: 'raiz' ;
+SIN: 'sin' ;
+COS: 'cos' ;
+POTENCIA: 'potencia' ;
+
+// Tipos de datos
+ENTERO: 'entero' ;
+DECIMAL: 'decimal' ;
+TEXTO: 'texto' ;
+
+// Identificadores y literales
+IDENTIFICADOR: [a-zA-Z_] [a-zA-Z0-9_]* ;
+NUMERO: [0-9]+ ('.' [0-9]+)? ;
+CADENA: '"' (~["\r\n])* '"' ;
+
+// Símbolos y operadores
+ASIGNACION: '=' ;
+PUNTOYCOMA: ';' ;
+PAR_IZQ: '(' ;
+PAR_DER: ')' ;
+LLAVE_IZQ: '{' ;
+LLAVE_DER: '}' ;
+
+// Operadores relacionales
+MENOR: '<' ;
+MAYOR: '>' ;
+IGUAL: '==' ;
+DISTINTO: '!=' ;
+MENOR_IGUAL: '<=' ;
+MAYOR_IGUAL: '>=' ;
+
+// Ignorar espacios y comentarios
+ESPACIOS: [ \t\r\n]+ -> skip ;
+COMENTARIO: '//' ~[\r\n]* -> skip ;
+
+ERROR: . ;
