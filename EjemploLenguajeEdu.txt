@@ -1,0 +1,27 @@
+entero contador = 0;
+decimal pi = 3.14159;
+texto mensaje = "Resultado: ";
+
+imprimir(mensaje);
+
+mientras (contador < 5) {
+    decimal seno = sin(pi * contador);
+    imprimir(seno);
+    contador = contador + 1;
+}
+
+si (contador == 5) {
+    imprimir("Bucle terminado");
+} sino {
+    imprimir("Error en el contador");
+}
+
+para (entero i = 1; i <= 3; i = i + 1) {
+    decimal raiz_i = raiz(i);
+    imprimir(raiz_i);
+}
+
+decimal base = 2;
+decimal exponente = 3;
+decimal potencia = potencia(base, exponente);
+imprimir(potencia);
